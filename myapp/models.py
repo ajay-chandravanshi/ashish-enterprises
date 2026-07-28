@@ -67,6 +67,16 @@ class ScratchCard(models.Model):
     )
     plumber = models.ForeignKey(Plumber, on_delete=models.CASCADE)
     purchase_amount = models.PositiveIntegerField()
+    REWARD_CHOICES = [
+        ("Cash", "Cash"),
+        ("Product", "Product"),
+    ]
+
+    reward_type = models.CharField(
+        max_length=10,
+        choices=REWARD_CHOICES,
+        default="Cash"
+    )
     note = models.TextField(blank=True)
     reward_text = models.CharField(max_length=100)
 

@@ -879,10 +879,12 @@ def add_scratch_card(request):
         purchase_amount = int(
             request.POST.get("purchase_amount")
         )
+        reward_type = request.POST.get("reward_type")
 
         note = request.POST.get("note")
 
         rule = RewardRule.objects.filter(
+            prize_type=reward_type,
             min_purchase__lte=purchase_amount,
             max_purchase__gte=purchase_amount
         ).first()
@@ -909,6 +911,7 @@ def add_scratch_card(request):
             plumber=plumber,
 
             purchase_amount=purchase_amount,
+            reward_type=reward_type,
 
             note=note,
 
