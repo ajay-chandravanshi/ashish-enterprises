@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-zue094-$qk_+yz1pdz5x48op*)$r&j#0aee)=$f19ojze4mk9f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "ajay-chandravanshi.pythonanywhere.com",
+]
 
 
 # Application definition
@@ -121,9 +125,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 SESSION_COOKIE_AGE = 1000
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
