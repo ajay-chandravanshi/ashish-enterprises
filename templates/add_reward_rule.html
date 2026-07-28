@@ -1,0 +1,216 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/add_reward_rule.css' %}" />
+
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>
+        {% if rule %}
+
+        <i class="bi bi-pencil-square"></i>
+        Edit Reward Rule {% else %}
+
+        <i class="bi bi-gift-fill"></i>
+        Add Reward Rule {% endif %}
+      </h2>
+
+      <a href="{% url 'reward_rules' %}" class="back-btn">
+        <i class="bi bi-arrow-left"></i>
+        Back
+      </a>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Min Purchase</label>
+
+          <input
+            type="number"
+            name="min_purchase"
+            value="{% if rule %}{{ rule.min_purchase }}{% endif %}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Max Purchase</label>
+
+          <input
+            type="number"
+            name="max_purchase"
+            value="{% if rule %}{{ rule.max_purchase }}{% endif %}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Prize Type</label>
+
+          <select name="prize_type" id="prize_type" required>
+            <option
+              value="Cash"
+              {%
+              if
+              rule
+              and
+              rule.prize_type=""
+              ="Cash"
+              %}selected{%
+              endif
+              %}
+            >
+              Cash
+            </option>
+
+            <option
+              value="Product"
+              {%
+              if
+              rule
+              and
+              rule.prize_type=""
+              ="Product"
+              %}selected{%
+              endif
+              %}
+            >
+              Product
+            </option>
+          </select>
+        </div>
+
+        <!-- Product Dropdown -->
+
+        <div class="form-group" id="product_dropdown_group">
+          <label>Purchase Product</label>
+
+          <select name="purchase_product">
+            {% for product in products %}
+
+            <option
+              value="{{ product.id }}"
+              {%
+              if
+              rule
+              and
+              rule.purchase_product=""
+              ="product.name"
+              %}
+              selected
+              {%
+              endif
+              %}
+            >
+              {{ product.name }}
+            </option>
+
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Cash Textbox -->
+
+        <div class="form-group" id="cash_product_group">
+          <label>Purchase Product</label>
+
+          <input
+            type="text"
+            name="cash_purchase_product"
+            placeholder="Enter purchase product"
+            value="{% if rule and rule.prize_type == 'Cash' %}{{ rule.purchase_product }}{% endif %}"
+          />
+        </div>
+        <div class="form-group" id="buy_qty_group">
+          <label>Buy Quantity</label>
+
+          <input
+            type="number"
+            name="buy_quantity"
+            value="{% if rule %}{{ rule.buy_quantity }}{% else %}11{% endif %}"
+          />
+        </div>
+
+        <div class="form-group" id="cash_min_group">
+          <label>Min Reward</label>
+
+          <input
+            type="number"
+            name="min_reward"
+            value="{% if rule %}{{ rule.min_reward }}{% endif %}"
+          />
+        </div>
+
+        <div class="form-group" id="cash_max_group">
+          <label>Max Reward</label>
+
+          <input
+            type="number"
+            name="max_reward"
+            value="{% if rule %}{{ rule.max_reward }}{% endif %}"
+          />
+        </div>
+
+        <div class="form-group" id="reward_product_group">
+          <label>Reward Product</label>
+
+          <input
+            type="text"
+            name="reward_product"
+            placeholder="Enter reward product"
+            value="{% if rule %}{{ rule.reward_product }}{% endif %}"
+          />
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="save-btn">
+          {% if rule %} Update Rule {% else %} Save Rule {% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  const prizeType = document.getElementById("prize_type");
+
+  const cashMin = document.getElementById("cash_min_group");
+  const cashMax = document.getElementById("cash_max_group");
+  const rewardProduct = document.getElementById("reward_product_group");
+
+  const buyQty = document.getElementById("buy_qty_group");
+
+  const productDropdown = document.getElementById("product_dropdown_group");
+  const cashProduct = document.getElementById("cash_product_group");
+
+  function toggleFields() {
+    if (prizeType.value === "Cash") {
+      cashMin.style.display = "flex";
+      cashMax.style.display = "flex";
+
+      rewardProduct.style.display = "none";
+      buyQty.style.display = "none";
+
+      productDropdown.style.display = "none";
+      cashProduct.style.display = "flex";
+    } else {
+      cashMin.style.display = "none";
+      cashMax.style.display = "none";
+
+      rewardProduct.style.display = "flex";
+      buyQty.style.display = "flex";
+
+      productDropdown.style.display = "flex";
+      cashProduct.style.display = "none";
+    }
+  }
+
+  toggleFields();
+
+  prizeType.addEventListener("change", toggleFields);
+</script>
+
+{% endblock %}

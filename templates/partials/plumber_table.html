@@ -1,0 +1,74 @@
+
+{% for plumber in plumbers %}
+
+<tr>
+
+    <td>
+
+        <div class="plumber-name">
+
+            <div class="avatar">
+
+                {{ plumber.name|first|upper }}
+
+            </div>
+
+            <span>{{ plumber.name }}</span>
+
+        </div>
+
+    </td>
+
+    <td>{{ plumber.phone }}</td>
+
+    <td>{{ plumber.address }}</td>
+
+    <td>
+
+        <a href="{% url 'product_progress' plumber.id %}" class="progress-btn">
+
+            <i class="bi bi-bar-chart"></i>
+
+            View Progress
+
+        </a>
+
+    </td>
+
+   <td>
+
+        <div class="action-buttons">
+
+            <a href="{% url 'edit_plumber' plumber.id %}" class="edit-btn">
+
+                <i class="bi bi-pencil-square"></i>
+
+            </a>
+
+            <a href="{% url 'delete_plumber' plumber.id %}"
+            class="delete-btn"
+            onclick="return confirm('Delete this plumber?')">
+
+                <i class="bi bi-trash"></i>
+
+            </a>
+
+        </div>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="5" class="empty">
+
+        No plumbers found.
+
+    </td>
+
+</tr>
+
+{% endfor %}

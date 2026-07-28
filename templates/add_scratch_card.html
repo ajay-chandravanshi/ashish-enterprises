@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/add_scratch_card.css' %}">
+
+<div class="form-container">
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <h2>
+                <i class="bi bi-ticket-perforated-fill"></i>
+                Add Scratch Card
+            </h2>
+
+            <a href="{% url 'scratch_cards' %}" class="back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back
+            </a>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Plumber</label>
+
+                    <select name="plumber" required>
+
+                        <option value="">Select Plumber</option>
+
+                        {% for plumber in plumbers %}
+
+                        <option value="{{ plumber.id }}">
+
+                            {{ plumber.name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Purchase Amount</label>
+
+                    <input
+                        type="number"
+                        name="purchase_amount"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group full-width">
+
+                    <label>Note</label>
+
+                    <textarea
+                        name="note"
+                        rows="5"
+                        placeholder="Enter note (optional)"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="btn-area">
+
+                <button type="submit" class="save-btn">
+                    Save Scratch Card
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

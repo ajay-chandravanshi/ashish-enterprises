@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+
+<div class="form-container">
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <h1>
+
+                {% if product %}
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Edit Product
+
+                {% else %}
+
+                    <i class="bi bi-box-seam"></i>
+
+                    Add Product
+
+                {% endif %}
+
+            </h1>
+
+            <p>
+
+                {% if product %}
+
+                    Update product details.
+
+                {% else %}
+
+                    Add a new product into the system.
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Product Name</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    maxlength="100"
+                    required
+                    value="{{ product.name|default:'' }}"
+                >
+
+            </div>
+
+            <div class="button-group">
+
+                <a href="{% url 'products' %}" class="cancel-btn">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Cancel
+
+                </a>
+
+                <button type="submit" class="save-btn">
+
+                    {% if product %}
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Update Product
+
+                    {% else %}
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Save Product
+
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,175 @@
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>SR.</th>
+
+            <th>Plumber</th>
+
+            <th>Purchase</th>
+
+            <th>Reward</th>
+
+            <th>Created</th>
+
+            <th>Status</th>
+
+            <th>Open</th>
+
+            <th>Copy</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for card in cards %}
+
+        <tr>
+
+            <td>{{ forloop.counter }}</td>
+
+            <td>
+
+                <div class="plumber-box">
+
+                    <div class="avatar">
+
+                        {{ card.plumber.name|first|upper }}
+
+                    </div>
+
+                    <span class="plumber-name">
+
+                        {{ card.plumber.name }}
+
+                    </span>
+
+                </div>
+
+            </td>
+
+            <td>
+
+                ₹{{ card.purchase_amount }}
+
+            </td>
+
+            <td>
+
+                {{ card.reward_text }}
+
+            </td>
+
+            <td>
+
+                {{ card.created_at|date:"d M Y" }}
+
+            </td>
+
+            <td>
+
+                {% if card.is_scratched %}
+
+                    <span class="status used">
+
+                        Scratched
+
+                    </span>
+
+                {% else %}
+
+                    <span class="status pending">
+
+                        Pending
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a
+                    href="{% url 'scratch_card' card.token %}"
+                    target="_blank"
+                    class="open-btn"
+                >
+
+                    <i class="bi bi-box-arrow-up-right"></i>
+
+                </a>
+
+            </td>
+
+            <td>
+
+                <button
+                    class="copy-btn"
+                    data-link="{% url 'scratch_card' card.token %}"
+                    onclick="copyLink(this)"
+                >
+
+                    <i class="bi bi-clipboard"></i>
+
+                </button>
+
+            </td>
+
+            <td>
+
+                <div class="action-buttons">
+
+                    <a
+                        href="{% url 'delete_scratch_card' card.id %}"
+                        class="delete-btn"
+                        onclick="return confirm('Delete Scratch Card?')"
+                    >
+
+                        <i class="bi bi-trash"></i>
+
+                    </a>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="9" class="empty">
+
+                No Scratch Cards Found.
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<script>
+
+function copyLink(btn){
+
+    const link = window.location.origin + btn.dataset.link;
+
+    navigator.clipboard.writeText(link);
+
+    alert("Link Copied");
+
+}
+
+</script>

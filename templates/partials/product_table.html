@@ -1,0 +1,51 @@
+{% for product in products %}
+
+<tr>
+
+    <td>{{ forloop.counter }}</td>
+
+    <td>
+        <div class="product-name">
+            <i class="bi bi-box-seam-fill"></i>
+            <span>{{ product.name }}</span>
+        </div>
+    </td>
+
+    <td>
+
+        <div class="action-buttons">
+
+            <a href="{% url 'edit_product' product.id %}" class="edit-btn" title="Edit">
+
+                <i class="bi bi-pencil"></i>
+
+            </a>
+
+            <a href="{% url 'delete_product' product.id %}"
+               class="delete-btn"
+               title="Delete"
+               onclick="return confirm('Delete this product?')">
+
+                <i class="bi bi-trash"></i>
+
+            </a>
+
+        </div>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="3" class="empty">
+
+        No products found.
+
+    </td>
+
+</tr>
+
+{% endfor %}

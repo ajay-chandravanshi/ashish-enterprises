@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/purchase_history.css' %}">
+
+<div class="page-header">
+
+    <div>
+
+        <h1><i class="bi bi-cart-check-fill"></i> Purchase History</h1>
+
+        <p>Manage all purchase records.</p>
+
+    </div>
+
+    <div class="header-actions">
+
+        <div class="search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search purchase..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <a href="{% url 'add_purchase' %}" class="add-btn">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Purchase
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>SR.</th>
+                <th>Plumber</th>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Total</th>
+                <th>Purchase Date</th>
+                <th>Note</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="table-body">
+
+            {% include "partials/purchase_table.html" %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+let timer;
+
+const search = document.getElementById("search");
+
+search.addEventListener("keyup", function(){
+
+    clearTimeout(timer);
+
+    timer = setTimeout(function(){
+
+        fetch("/purchase-history/?search=" + encodeURIComponent(search.value), {
+
+            headers:{
+                "X-Requested-With":"XMLHttpRequest"
+            }
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("table-body").innerHTML = data.html;
+
+        });
+
+    },300);
+
+});
+
+</script>
+
+{% endblock %}

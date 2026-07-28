@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ashish Enterprises</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                Ashish Enterprises
+            </a>
+        </div>
+    </nav>
+
+    <div class="container text-center mt-5">
+
+        <h1 class="display-4 fw-bold">
+            🎁 Scratch & Win
+        </h1>
+
+        <p class="lead">
+            Welcome to Ashish Enterprises
+        </p>
+
+        <button class="btn btn-success btn-lg">
+            Scratch Card
+        </button>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

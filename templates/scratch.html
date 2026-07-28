@@ -1,0 +1,73 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ashish Enterprises | Scratch Card</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="{% static 'images/logo.jpeg' %}" />
+  </head>
+
+  <body>
+    <div class="bg-circle one"></div>
+    <div class="bg-circle two"></div>
+    <div class="bg-circle three"></div>
+
+    <div class="main">
+      <div class="top">
+        <img src="{% static 'images/logo.jpeg' %}" class="logo" alt="Ashish Enterprises" />
+        <h1>Ashish Enterprises</h1>
+        <p class="tagline">🎁 Scratch &amp; Win Reward 🎁</p>
+      </div>
+
+      <div class="card-box">
+        <div class="reward-card">
+          <div class="card-shine"></div>
+          <div class="reward-content" id="reward">
+            <div class="gift">🎉</div>
+            <h2>Congratulations</h2>
+            <h1>{{ card.reward_text }}</h1>
+            <p>Thank you for shopping with us ❤️</p>
+          </div>
+
+          <canvas id="scratch"></canvas>
+        </div>
+
+        <div class="instruction">
+          <span class="pulse-dot"></span>
+          👆 Scratch the silver area to reveal your reward
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-divider"></div>
+        <div class="footer-row">
+          <img src="{% static 'images/logo.jpeg' %}" class="footer-logo" alt="logo" />
+          <div class="footer-text">
+            <h3>Ashish Enterprises</h3>
+            <p>📞 9039211250</p>
+          </div>
+        </div>
+        <span>Thank You • Visit Again ❤️</span>
+      </div>
+    </div>
+
+    {% csrf_token %}
+
+    <script>
+      const saveUrl = window.location.href;
+      const csrfToken = document.querySelector(
+        "[name=csrfmiddlewaretoken]",
+      ).value;
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
+</html>

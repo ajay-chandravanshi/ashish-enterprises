@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ashish Enterprises | Scratch Card</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="container">
+
+    <div class="logo-box">
+
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo">
+
+    </div>
+
+    <h1>
+
+        Ashish Enterprises
+
+    </h1>
+
+    <p class="subtitle">
+
+        🎁 Scratch & Win Reward 🎁
+
+    </p>
+
+    <div class="reward-card">
+
+        <div class="shine"></div>
+
+        <div id="reward">
+
+            <div class="emoji">
+
+                🎉
+
+            </div>
+
+            <h2>
+
+                Congratulations
+
+            </h2>
+
+            <h3>
+
+                {{ card.reward_text }}
+
+            </h3>
+
+            <p>
+
+                Thank you for shopping with us ❤️
+
+            </p>
+
+        </div>
+
+        <canvas id="scratch"></canvas>
+
+    </div>
+
+    <p class="hint">
+
+        👆 Scratch the silver area to reveal your reward
+
+    </p>
+
+    <div class="footer">
+
+        <img src="{% static 'images/logo.jpeg' %}" class="footer-logo">
+
+        <h4>
+
+            Ashish Enterprises
+
+        </h4>
+
+        <p>
+
+            📍 Quality Products • Best Service
+
+        </p>
+
+        <p>
+
+            📞 9039211250
+
+        </p>
+
+    </div>
+
+</div>
+
+{% csrf_token %}
+
+<script>
+
+const saveUrl = "";
+
+const csrfToken = document.querySelector(
+    "[name=csrfmiddlewaretoken]"
+).value;
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

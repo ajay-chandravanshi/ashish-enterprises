@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/product_progress.css' %}">
+
+<div class="page-header">
+
+    <div>
+
+        <h1>📊 Product Progress</h1>
+
+        <p>{{ plumber.name }}'s reward progress</p>
+
+    </div>
+
+    <a href="{% url 'plumbers' %}" class="back-btn">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th style="width:70px;">SR.</th>
+
+                <th>Purchase Product</th>
+
+                <th>Reward Product</th>
+
+                <th style="width:110px;">Purchased</th>
+
+                <th style="width:110px;">Free Given</th>
+
+                <th style="width:180px;">Progress</th>
+
+                <th style="width:140px;">Status</th>
+
+                <th style="width:170px;">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in progress %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td class="nowrap">
+
+                    {{ item.purchase_product }}
+
+                </td>
+
+                <td class="nowrap">
+
+                    {{ item.reward_product }}
+
+                </td>
+
+                <td>
+
+                    {{ item.purchased }}
+
+                </td>
+
+                <td>
+
+                    {{ item.free_given }}
+
+                </td>
+
+                <td>
+
+                    <div class="progress-text">
+
+                        {{ item.purchased }}/{{ item.buy_quantity }}
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            style="width: {{ item.percent }}%;"
+                        ></div>
+
+                    </div>
+
+                </td>
+
+                <td>
+
+                    {% if item.eligible %}
+
+                        <span class="status yes">
+
+                            Eligible
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status no">
+
+                            Not Eligible
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if item.eligible %}
+
+                        <a href="{% url 'give_reward' plumber.id item.rule_id %}" class="give-btn">
+                            🎁 Give Reward
+                        </a>
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="8" class="empty">
+
+                    No reward rules found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

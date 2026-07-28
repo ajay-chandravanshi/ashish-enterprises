@@ -1,0 +1,79 @@
+{% for reward in rewards %}
+
+<tr>
+
+    <td>{{ forloop.counter }}</td>
+
+    <td>
+
+        <div class="plumber-info">
+
+            <div class="avatar">
+
+                {{ reward.plumber.name|first|upper }}
+
+            </div>
+
+            <span>{{ reward.plumber.name }}</span>
+
+        </div>
+
+    </td>
+
+    <td>
+
+        <i class="bi bi-gift-fill product-icon"></i>
+
+        {{ reward.reward_product }}
+
+    </td>
+
+    <td>{{ reward.quantity }}</td>
+
+    <td>{{ reward.given_date|date:"d M, Y" }}</td>
+
+    <td>
+
+        {% if reward.note %}
+
+            {{ reward.note }}
+
+        {% else %}
+
+            -
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        <a
+            href="{% url 'delete_reward_history' reward.id %}"
+            class="delete-btn"
+            onclick="return confirm('Delete this reward history?')"
+        >
+
+            <i class="bi bi-trash"></i>
+
+        </a>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="7" class="empty-row">
+
+        <i class="bi bi-inbox"></i>
+
+        No reward history found.
+
+    </td>
+
+</tr>
+
+{% endfor %}

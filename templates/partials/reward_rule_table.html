@@ -1,0 +1,100 @@
+{% for rule in rules %}
+
+<tr>
+
+    <td>{{ forloop.counter }}</td>
+
+    <td>
+        <i class="bi bi-box-seam-fill product-icon"></i>
+        {{ rule.purchase_product }}
+    </td>
+
+    <td>
+        {% if rule.prize_type == "Cash" %}
+            -
+        {% else %}
+            {{ rule.buy_quantity }}
+        {% endif %}
+    </td>
+
+    <td>
+        {% if rule.prize_type == "Cash" %}
+            -
+        {% else %}
+            {{ rule.reward_product }}
+        {% endif %}
+    </td>
+
+    <td>₹{{ rule.min_purchase }}</td>
+
+    <td>₹{{ rule.max_purchase }}</td>
+
+    <td>
+
+        {% if rule.prize_type == "Cash" %}
+
+            <span class="cash-badge">
+                💵 Cash
+            </span>
+
+        {% else %}
+
+            <span class="product-badge">
+                🎁 Product
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {% if rule.prize_type == "Cash" %}
+
+            ₹{{ rule.min_reward }} - ₹{{ rule.max_reward }}
+
+        {% else %}
+
+            {{ rule.reward_product }}
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        <div class="action-buttons">
+
+            <a href="{% url 'edit_reward_rule' rule.id %}" class="edit-btn">
+
+                <i class="bi bi-pencil"></i>
+
+            </a>
+
+            <a href="{% url 'delete_reward_rule' rule.id %}"
+               class="delete-btn"
+               onclick="return confirm('Delete this reward rule?')">
+
+                <i class="bi bi-trash"></i>
+
+            </a>
+
+        </div>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="9" class="empty">
+
+        No reward rules found.
+
+    </td>
+
+</tr>
+
+{% endfor %}

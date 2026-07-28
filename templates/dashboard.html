@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="top-row">
+
+    <div>
+
+        <h1 class="page-title">
+            Dashboard
+        </h1>
+
+        <p class="page-subtitle">
+            Welcome back, Admin! 👋
+        </p>
+
+    </div>
+
+    <div class="date-card">
+        📅 {{ today|date:"d F, Y" }}
+    </div>
+
+</div>
+
+<div class="stats-grid">
+
+    <div class="stat-card blue">
+
+        <div class="top">
+
+            <div class="icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="info">
+                <h2>{{ plumbers }}</h2>
+                <p>Total Plumbers</p>
+            </div>
+
+        </div>
+
+        <a href="{% url 'plumbers' %}">View all →</a>
+
+    </div>
+
+    <div class="stat-card green">
+
+        <div class="top">
+
+            <div class="icon">
+                <i class="bi bi-bag-fill"></i>
+            </div>
+
+            <div class="info">
+                <h2>{{ purchases }}</h2>
+                <p>Total Purchases</p>
+            </div>
+
+        </div>
+
+        <a href="{% url 'purchase_history' %}">View all →</a>
+
+    </div>
+
+    <div class="stat-card purple">
+
+        <div class="top">
+
+            <div class="icon">
+                <i class="bi bi-ticket-perforated-fill"></i>
+            </div>
+
+            <div class="info">
+                <h2>{{ scratch_cards }}</h2>
+                <p>Scratch Cards</p>
+            </div>
+
+        </div>
+
+        <a href="{% url 'scratch_cards' %}">View all →</a>
+
+    </div>
+
+    <div class="stat-card orange">
+
+        <div class="top">
+
+            <div class="icon">
+                <i class="bi bi-trophy-fill"></i>
+            </div>
+
+            <div class="info">
+                <h2>{{ rewards }}</h2>
+                <p>Rewards Given</p>
+            </div>
+
+        </div>
+
+        <a href="{% url 'reward_history' %}">View all →</a>
+
+    </div>
+
+    <div class="stat-card red">
+
+        <div class="top">
+
+            <div class="icon">
+                <i class="bi bi-currency-rupee"></i>
+            </div>
+
+            <div class="info">
+                <h2>₹{{ cash_rewards }}</h2>
+                <p>Cash Rewards</p>
+            </div>
+
+        </div>
+
+        <a href="{% url 'reward_history' %}">View all →</a>
+
+    </div>
+
+</div>
+
+<div class="dashboard-grid">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h3>
+                🛒 Recent Purchases
+            </h3>
+
+            <a href="{% url 'purchase_history' %}">
+                View all
+            </a>
+
+        </div>
+
+        <table class="purchase-table">
+
+            <tr>
+
+                <th>Plumber</th>
+
+                <th>Amount</th>
+
+                <th>Status</th>
+
+            </tr>
+
+            {% for purchase in recent_purchases %}
+
+            <tr>
+
+                <td>{{ purchase.plumber.name }}</td>
+
+                <td>₹{{ purchase.total }}</td>
+
+                <td>
+
+                    <span class="badge">
+
+                        Completed
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="3">
+
+                    No Purchase Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h3>
+
+                🏅 Top Plumbers
+
+            </h3>
+
+            <a href="{% url 'plumbers' %}">
+
+                View all
+
+            </a>
+
+        </div>
+
+        {% for plumber in top_plumbers %}
+
+        <div class="top-item">
+
+            <span>
+
+                {{ forloop.counter }}. {{ plumber.plumber__name }}
+
+            </span>
+
+            <b>
+
+                ₹{{ plumber.total }}
+
+            </b>
+
+        </div>
+
+        {% empty %}
+
+        <div class="top-item">
+
+            <span>No Data</span>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<div class="panel quick-panel">
+
+    <h3>
+
+        ⚡ Quick Actions
+
+    </h3>
+
+    <div class="quick-grid">
+
+        <a href="{% url 'add_plumber' %}" class="quick-btn">
+
+            ➕
+
+            <span>Add Plumber</span>
+
+        </a>
+
+        <a href="{% url 'add_purchase' %}" class="quick-btn">
+
+            🛒
+
+            <span>Add Purchase</span>
+
+        </a>
+
+        <a href="{% url 'add_scratch_card' %}" class="quick-btn">
+
+            🎟️
+
+            <span>Generate Card</span>
+
+        </a>
+
+        <a href="{% url 'add_reward_rule' %}" class="quick-btn">
+
+            🎁
+
+            <span>Add Rule</span>
+
+        </a>
+
+        <a href="#" class="quick-btn">
+
+            📊
+
+            <span>Reports</span>
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

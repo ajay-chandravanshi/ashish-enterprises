@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/scratch_cards.css' %}">
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            <i class="bi bi-ticket-perforated-fill"></i>
+            Scratch Cards
+        </h1>
+
+        <p>Manage all scratch cards.</p>
+
+    </div>
+
+    <div class="header-actions">
+
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search scratch card..."
+                value="{{ search }}"
+            >
+        </div>
+
+        <a href="{% url 'add_scratch_card' %}" class="add-btn">
+            <i class="bi bi-plus-circle"></i>
+            Add Scratch Card
+        </a>
+
+    </div>
+
+</div>
+
+<div
+    class="table-card"
+    id="table-data"
+>
+{% include "partials/scratch_card_table.html" %}
+
+</div>
+
+<script>
+
+const search=document.getElementById("search");
+
+search.addEventListener("keyup",function(){
+
+    fetch(
+
+        "{% url 'scratch_cards' %}?search="+this.value,
+
+        {
+
+            headers:{
+                "X-Requested-With":"XMLHttpRequest"
+            }
+
+        }
+
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        document.getElementById("table-data").innerHTML=data.html;
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

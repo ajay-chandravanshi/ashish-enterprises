@@ -1,0 +1,75 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<h1>📊 Product Progress - {{ plumber.name }}</h1>
+
+<br>
+
+<table class="adminlist" style="width:100%;">
+
+    <thead>
+
+        <tr>
+            <th>Sr.</th>
+            <th>Purchase Product</th>
+            <th>Reward Product</th>
+            <th>Purchased</th>
+            <th>Free Given</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for item in progress_list %}
+    <tr>
+
+        <td>{{ forloop.counter }}</td>
+
+        <td>{{ item.purchase_product }}</td>
+
+        <td>{{ item.reward_product }}</td>
+
+        <td>{{ item.purchased }}</td>
+
+        <td>{{ item.free_given }}</td>
+
+        <td>{{ item.remaining }}/{{ item.buy_quantity }}</td>
+
+        <td>
+            {% if item.eligible %}
+                🟢 Eligible
+            {% else %}
+                🔴 Not Eligible
+            {% endif %}
+        </td>
+
+        <td>
+            {% if item.eligible %}
+                <a href="{% url 'admin:give-product-reward' plumber_id item.rule_id %}"
+                class="button">
+                    🎁 Give Reward
+                </a>
+            {% else %}
+                -
+            {% endif %}
+        </td>
+
+    </tr>
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+<br><br>
+
+<a href="/admin/myapp/plumber/" class="button">
+    ← Back
+</a>
+
+{% endblock %}

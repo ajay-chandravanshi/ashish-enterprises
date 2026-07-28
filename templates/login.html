@@ -1,0 +1,140 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ashish Enterprises Login</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="logo-box">
+
+            <img src="{% static 'images/logo.jpeg' %}" alt="Logo">
+
+        </div>
+
+        <h1>
+
+            Ashish Enterprises
+
+        </h1>
+
+        <p>
+
+            Admin Login
+
+        </p>
+
+        <form method="POST" autocomplete="off">
+
+            {% csrf_token %}
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-user"></i>
+
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Enter Username"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter Password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <i
+                    class="fa-solid fa-eye eye-icon"
+                    id="togglePassword"
+                ></i>
+
+            </div>
+
+            {% if error %}
+
+            <div class="error">
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+            <button type="submit">
+
+                Login
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+const password=document.getElementById("password");
+
+const toggle=document.getElementById("togglePassword");
+
+toggle.onclick=function(){
+
+    if(password.type==="password"){
+
+        password.type="text";
+
+        toggle.classList.remove("fa-eye");
+
+        toggle.classList.add("fa-eye-slash");
+
+    }
+
+    else{
+
+        password.type="password";
+
+        toggle.classList.remove("fa-eye-slash");
+
+        toggle.classList.add("fa-eye");
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

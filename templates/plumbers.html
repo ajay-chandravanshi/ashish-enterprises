@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/plumbers.css' %}">
+
+<div class="page-header">
+
+    <div>
+
+        <h1>👷 Plumbers</h1>
+
+        <p>Manage all registered plumbers.</p>
+
+    </div>
+
+    <div class="header-actions">
+
+        <div class="search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search plumber..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <a href="{% url 'add_plumber' %}" class="add-btn">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Plumber
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Phone</th>
+
+                <th>Address</th>
+
+                <th>Product Progress</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="table-body">
+
+            {% include "partials/plumber_table.html" %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+let timer;
+
+const search = document.getElementById("search");
+
+search.addEventListener("keyup", function(){
+
+    clearTimeout(timer);
+
+    timer = setTimeout(function(){
+
+        fetch("/plumbers/?search=" + encodeURIComponent(search.value), {
+
+            headers:{
+
+                "X-Requested-With":"XMLHttpRequest"
+
+            }
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("table-body").innerHTML = data.html;
+
+        });
+
+    },300);
+
+});
+
+</script>
+
+{% endblock %}
