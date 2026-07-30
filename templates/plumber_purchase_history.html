@@ -1,0 +1,97 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/plumber_purchase_history.css' %}">
+
+<div class="page-header">
+  <div>
+    <h1>
+      <i class="bi bi-cart-check-fill"></i>
+      Purchase History
+    </h1>
+
+    <div class="plumber-card">
+      <div class="plumber-avatar">{{ plumber.name|first|upper }}</div>
+
+      <div class="plumber-details">
+        <span class="plumber-title"> Plumber Name </span>
+
+        <h2>{{ plumber.name }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <a href="{% url 'purchase_history' %}" class="back-btn">
+    <i class="bi bi-arrow-left"></i>
+
+    Back
+  </a>
+</div>
+
+<div class="table-card">
+  <table>
+    <thead>
+      <tr>
+        <th>SR.</th>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Rate</th>
+        <th>Total</th>
+        <th>Purchase Date</th>
+        <th>Note</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for purchase in purchases %}
+
+      <tr>
+        <td>{{ forloop.counter }}</td>
+
+        <td>
+          <i class="bi bi-box-seam-fill product-icon"></i>
+
+          {{ purchase.product.name }}
+        </td>
+
+        <td>{{ purchase.quantity }}</td>
+
+        <td>₹{{ purchase.rate }}</td>
+
+        <td><strong>₹{{ purchase.total }}</strong></td>
+
+        <td>{{ purchase.purchase_date|date:"d M, Y" }}</td>
+
+        <td>
+          {% if purchase.note %} {{ purchase.note }} {% else %} - {% endif %}
+        </td>
+
+        <td>
+          <div class="action-buttons">
+            <a href="{% url 'edit_purchase' purchase.id %}" class="edit-btn">
+              <i class="bi bi-pencil"></i>
+            </a>
+
+            <a
+              href="{% url 'delete_purchase' purchase.id %}"
+              class="delete-btn"
+              onclick="return confirm('Delete this purchase?');"
+            >
+              <i class="bi bi-trash"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+
+      {% empty %}
+
+      <tr>
+        <td colspan="8" class="empty">No Purchase History Found.</td>
+      </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

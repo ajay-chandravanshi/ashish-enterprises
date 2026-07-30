@@ -3,7 +3,11 @@ from django.db import models
 
 class Plumber(models.Model):
     name = models.CharField(max_length=30)
-    phone = models.CharField(max_length=10, unique=True)
+    phone = models.CharField(
+        max_length=10,
+        unique=True,
+        db_index=True
+    )
     address = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,20 +35,22 @@ class RewardRule(models.Model):
         (PRODUCT, "Product"),
     ]
 
-    min_purchase = models.PositiveIntegerField()
-    max_purchase = models.PositiveIntegerField()
+    min_purchase = models.PositiveIntegerField(db_index=True)
+    max_purchase = models.PositiveIntegerField(db_index=True)
 
     prize_type = models.CharField(
         max_length=10,
         choices=PRIZE_CHOICES,
-        default=CASH
+        default=CASH,
+        db_index=True
     )
 
     min_reward = models.PositiveIntegerField(null=True, blank=True)
     max_reward = models.PositiveIntegerField(null=True, blank=True)
 
     purchase_product = models.CharField(
-        max_length=100
+        max_length=100,
+        db_index=True
     )
 
 
@@ -52,7 +58,8 @@ class RewardRule(models.Model):
 
     reward_product = models.CharField(
         max_length=100,
-        blank=True
+        blank=True,
+        db_index=True
     )
     
     def __str__(self):
@@ -66,7 +73,7 @@ class ScratchCard(models.Model):
     blank=True
     )
     plumber = models.ForeignKey(Plumber, on_delete=models.CASCADE)
-    purchase_amount = models.PositiveIntegerField()
+    purchase_amount = models.PositiveIntegerField(db_index=True)
     REWARD_CHOICES = [
         ("Cash", "Cash"),
         ("Product", "Product"),
@@ -80,10 +87,21 @@ class ScratchCard(models.Model):
     note = models.TextField(blank=True)
     reward_text = models.CharField(max_length=100)
 
-    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    token = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+        db_index=True
+    )
 
-    is_scratched = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_scratched = models.BooleanField(
+        default=False,
+        db_index=True
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
 
     def __str__(self):
         return self.plumber.name
@@ -111,9 +129,12 @@ class PurchaseHistory(models.Model):
         blank=True
     )
 
-    purchase_date = models.DateField()
+    purchase_date = models.DateField(db_index=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
 
     def __str__(self):
         return f"{self.plumber.name} - {self.product.name} ({self.quantity})"
@@ -125,7 +146,10 @@ class FreeRewardHistory(models.Model):
         on_delete=models.CASCADE
     )
 
-    reward_product = models.CharField(max_length=100)
+    reward_product = models.CharField(
+        max_length=100,
+        db_index=True
+    )
 
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.PositiveIntegerField(default=0)
@@ -135,9 +159,12 @@ class FreeRewardHistory(models.Model):
         blank=True
     )
 
-    given_date = models.DateField()
+    given_date = models.DateField(db_index=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
 
     class Meta:
         verbose_name = "Free Reward History"

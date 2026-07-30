@@ -19,6 +19,7 @@ from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.db.models.functions import Cast
 from datetime import date
+from django.core.cache import cache
 
 def login_view(request):
 
@@ -76,18 +77,21 @@ def dashboard(request):
 
     cash_rewards = 0
 
-    scratch_cards = ScratchCard.objects.filter(
-        reward_rule__prize_type="Cash",
-        is_scratched=True
+    reward_list = (
+        ScratchCard.objects
+        .filter(
+            reward_rule__prize_type="Cash",
+            is_scratched=True
+        )
+        .values_list("reward_text", flat=True)
     )
 
-    for card in scratch_cards:
-
+    for reward in reward_list:
         try:
             cash_rewards += int(
-                card.reward_text.replace("₹", "").strip()
+                reward.replace("₹", "").strip()
             )
-        except:
+        except (ValueError, AttributeError):
             pass
 
     context = {
@@ -135,25 +139,38 @@ def search_card(request):
 
     if request.method == "POST":
 
-        # Scratch button
+        # Scratch Button
         if "scratch" in request.POST:
 
-            card = ScratchCard.objects.get(id=request.POST["card_id"])
+            card = get_object_or_404(
+                ScratchCard.objects.select_related(
+                    "plumber",
+                    "reward_rule"
+                ),
+                id=request.POST["card_id"]
+            )
 
-            card.is_scratched = True
-            card.save()
+            if not card.is_scratched:
+                card.is_scratched = True
+                card.save(update_fields=["is_scratched"])
+                cache.delete("sidebar_total_rewards")
 
             show_reward = True
 
-        # Search button
+        # Search Button
         else:
 
-            phone = request.POST.get("phone")
+            phone = request.POST.get("phone", "").strip()
 
-            card = ScratchCard.objects.filter(
-                plumber__phone=phone,
-                is_scratched=False
-            ).first()
+            card = (
+                ScratchCard.objects
+                .select_related("plumber", "reward_rule")
+                .filter(
+                    plumber__phone=phone,
+                    is_scratched=False
+                )
+                .first()
+            )
 
     return render(request, "search.html", {
         "card": card,
@@ -166,7 +183,12 @@ def logout_view(request):
 
 def scratch_card(request, token):
 
-    card = ScratchCard.objects.filter(token=token).first()
+    card = ScratchCard.objects.select_related(
+        "plumber",
+        "reward_rule"
+    ).filter(
+        token=token
+    ).first()
 
     if not card:
         return render(request, "notfound.html")
@@ -178,7 +200,9 @@ def scratch_card(request, token):
     if request.method == "POST":
 
         card.is_scratched = True
-        card.save()
+        card.save(update_fields=["is_scratched"])
+
+        cache.delete("sidebar_total_rewards")
 
         return JsonResponse({
             "status": "success"
@@ -192,7 +216,12 @@ def plumbers(request):
 
     search = request.GET.get("search", "")
 
-    plumbers = Plumber.objects.all()
+    plumbers = Plumber.objects.only(
+        "id",
+        "name",
+        "phone",
+        "address"
+    )
 
     if search:
         plumbers = plumbers.filter(name__icontains=search)
@@ -286,7 +315,10 @@ def products(request):
 
     search = request.GET.get("search", "")
 
-    products = Product.objects.all()
+    products = Product.objects.only(
+        "id",
+        "name"
+    )
 
     if search:
         products = products.filter(name__icontains=search)
@@ -372,32 +404,43 @@ def delete_product(request, id):
 @login_required(login_url="/")
 def product_progress(request, plumber_id):
 
-    plumber = get_object_or_404(
-        Plumber,
-        id=plumber_id
-    )
-
-    progress = []
+    plumber = get_object_or_404(Plumber, id=plumber_id)
 
     rules = RewardRule.objects.filter(
         prize_type="Product"
+    ).only(
+        "id",
+        "purchase_product",
+        "reward_product",
+        "buy_quantity"
     )
+
+    purchase_totals = {
+        row["product__name"]: row["total"]
+        for row in (
+            PurchaseHistory.objects
+            .filter(plumber=plumber)
+            .values("product__name")
+            .annotate(total=Sum("quantity"))
+        )
+    }
+
+    reward_totals = {
+        row["reward_product"]: row["total"]
+        for row in (
+            FreeRewardHistory.objects
+            .filter(plumber=plumber)
+            .values("reward_product")
+            .annotate(total=Sum("quantity"))
+        )
+    }
+
+    progress = []
 
     for rule in rules:
 
-        purchased = PurchaseHistory.objects.filter(
-            plumber=plumber,
-            product__name=rule.purchase_product
-        ).aggregate(
-            total=Sum("quantity")
-        )["total"] or 0
-
-        free_given = FreeRewardHistory.objects.filter(
-            plumber=plumber,
-            reward_product=rule.reward_product
-        ).aggregate(
-            total=Sum("quantity")
-        )["total"] or 0
+        purchased = purchase_totals.get(rule.purchase_product, 0) or 0
+        free_given = reward_totals.get(rule.reward_product, 0) or 0
 
         current = purchased - (free_given * rule.buy_quantity)
 
@@ -410,24 +453,14 @@ def product_progress(request, plumber_id):
         )
 
         progress.append({
-
             "rule_id": rule.id,
-
             "purchase_product": rule.purchase_product,
-
             "reward_product": rule.reward_product,
-
             "buy_quantity": rule.buy_quantity,
-
             "purchased": current,
-
             "free_given": free_given,
-
             "percent": percent,
-
             "eligible": current >= rule.buy_quantity,
-            
-
         })
 
     return render(
@@ -436,7 +469,7 @@ def product_progress(request, plumber_id):
         {
             "plumber": plumber,
             "progress": progress,
-        }
+        },
     )
 
 @login_required(login_url="/")
@@ -444,20 +477,11 @@ def purchase_history(request):
 
     search = request.GET.get("search", "")
 
-    purchases = PurchaseHistory.objects.select_related(
-        "plumber",
-        "product"
-    ).order_by("-purchase_date")
+    plumbers = Plumber.objects.all().order_by("name")
 
     if search:
-
-        purchases = purchases.filter(
-            plumber__name__icontains=search
-        ) | PurchaseHistory.objects.select_related(
-            "plumber",
-            "product"
-        ).filter(
-            product__name__icontains=search
+        plumbers = plumbers.filter(
+            name__icontains=search
         )
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
@@ -465,7 +489,7 @@ def purchase_history(request):
         html = render_to_string(
             "partials/purchase_table.html",
             {
-                "purchases": purchases
+                "plumbers": plumbers
             },
             request=request
         )
@@ -478,12 +502,36 @@ def purchase_history(request):
         request,
         "purchase_history.html",
         {
-            "purchases": purchases,
+            "plumbers": plumbers,
             "search": search,
             "current": "purchase_history",
         }
     )
 
+@login_required(login_url="/")
+def plumber_purchase_history(request, plumber_id):
+
+    plumber = get_object_or_404(
+        Plumber,
+        id=plumber_id
+    )
+
+    purchases = (
+        PurchaseHistory.objects
+        .filter(plumber=plumber)
+        .select_related("product")
+        .order_by("-purchase_date")
+    )
+
+    return render(
+        request,
+        "plumber_purchase_history.html",
+        {
+            "plumber": plumber,
+            "purchases": purchases,
+            "current": "purchase_history",
+        }
+    )
 
 @login_required(login_url="/")
 def add_purchase(request):
@@ -594,7 +642,17 @@ def reward_rules(request):
 
     search = request.GET.get("search", "")
 
-    rules = RewardRule.objects.all()
+    rules = RewardRule.objects.only(
+        "id",
+        "purchase_product",
+        "reward_product",
+        "prize_type",
+        "buy_quantity",
+        "min_purchase",
+        "max_purchase",
+        "min_reward",
+        "max_reward",
+    )
 
     if search:
 
@@ -867,7 +925,10 @@ def scratch_cards(request):
 @login_required(login_url="/")
 def add_scratch_card(request):
 
-    plumbers = Plumber.objects.all().order_by("name")
+    plumbers = Plumber.objects.only(
+        "id",
+        "name"
+    ).order_by("name")
 
     if request.method == "POST":
 
@@ -970,20 +1031,18 @@ def give_reward(request, plumber_id, rule_id):
         id=rule_id
     )
 
-    purchased = PurchaseHistory.objects.filter(
-        plumber=plumber,
+    purchase_data = PurchaseHistory.objects.filter(
+        plumber_id=plumber.id,
         product__name=rule.purchase_product
-    ).aggregate(
-        total=Sum("quantity")
-    )["total"] or 0
+    ).aggregate(total=Coalesce(Sum("quantity"), 0))
 
-    free_given = FreeRewardHistory.objects.filter(
-        plumber=plumber,
+    reward_data = FreeRewardHistory.objects.filter(
+        plumber_id=plumber.id,
         reward_product=rule.reward_product
-    ).aggregate(
-        total=Sum("quantity")
-    )["total"] or 0
+    ).aggregate(total=Coalesce(Sum("quantity"), 0))
 
+    purchased = purchase_data["total"]
+    free_given = reward_data["total"]
     current = purchased - (free_given * rule.buy_quantity)
 
     if current < rule.buy_quantity:
@@ -998,10 +1057,16 @@ def give_reward(request, plumber_id, rule_id):
             plumber_id=plumber.id
         )
 
-    purchase = PurchaseHistory.objects.filter(
-        plumber=plumber,
-        product__name=rule.purchase_product
-    ).order_by("-purchase_date").first()
+    purchase = (
+        PurchaseHistory.objects
+        .filter(
+            plumber_id=plumber.id,
+            product__name=rule.purchase_product
+        )
+        .only("rate")
+        .order_by("-purchase_date")
+        .first()
+    )
 
     price = purchase.rate if purchase else 0
 
@@ -1013,6 +1078,7 @@ def give_reward(request, plumber_id, rule_id):
         note="Reward Given",
         given_date=date.today(),
     )
+    cache.delete("sidebar_total_rewards")
 
     messages.success(
         request,

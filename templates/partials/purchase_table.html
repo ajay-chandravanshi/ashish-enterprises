@@ -1,90 +1,24 @@
-{% for purchase in purchases %}
+{% for plumber in plumbers %}
 
 <tr>
 
-    <td>{{ forloop.counter }}</td>
-
-    <td>
-
-        <div class="plumber-name">
-
-            <div class="avatar">
-
-                {{ purchase.plumber.name|first|upper }}
-
-            </div>
-
-            {{ purchase.plumber.name }}
-
-        </div>
-
+    <td data-label="SR">
+        {{ forloop.counter }}
     </td>
 
-    <td>
-
-        <i class="bi bi-box-seam-fill product-icon"></i>
-
-        {{ purchase.product.name }}
-
+    <td data-label="Plumber">
+        {{ plumber.name|title }}
     </td>
 
-    <td>
+    <td data-label="History">
 
-        {{ purchase.quantity }}
+        <a href="{% url 'plumber_purchase_history' plumber.id %}" class="progress-btn">
 
-    </td>
+            <i class="bi bi-clock-history"></i>
 
-    <td>
+            View History
 
-        ₹{{ purchase.rate }}
-
-    </td>
-
-    <td>
-
-        <strong>₹{{ purchase.total }}</strong>
-
-    </td>
-
-    <td>
-
-        {{ purchase.purchase_date|date:"d M, Y" }}
-
-    </td>
-
-    <td>
-
-        {% if purchase.note %}
-
-            {{ purchase.note }}
-
-        {% else %}
-
-            -
-
-        {% endif %}
-
-    </td>
-
-    <td>
-
-        <div class="action-buttons">
-
-            <a href="{% url 'edit_purchase' purchase.id %}" class="edit-btn">
-
-                <i class="bi bi-pencil"></i>
-
-            </a>
-
-            <a href="{% url 'delete_purchase' purchase.id %}"
-               class="delete-btn"
-               onclick="return confirm('Delete this purchase?')">
-
-                <i class="bi bi-trash"></i>
-
-            </a>
-
-        </div>
+        </a>
 
     </td>
 
@@ -94,10 +28,8 @@
 
 <tr>
 
-    <td colspan="9" class="empty">
-
-        No purchase history found.
-
+    <td colspan="3" class="empty">
+        No plumber found.
     </td>
 
 </tr>

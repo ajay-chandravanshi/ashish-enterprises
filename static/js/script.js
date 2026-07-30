@@ -114,7 +114,7 @@ function checkScratch() {
 
   const percent = transparent / (canvas.width * canvas.height);
 
-  if (percent > 0.4) {
+  if (percent > 0.2) {
     completed = true;
 
     canvas.style.transition = ".5s";

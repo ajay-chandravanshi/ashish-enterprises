@@ -42,6 +42,9 @@ class PlumberAdmin(admin.ModelAdmin):
         "address",
         "view_progress",
     )
+    list_per_page = 50
+    search_fields = ("name", "phone")
+    ordering = ("name",)
     
     def view_progress(self, obj):
 
@@ -201,7 +204,10 @@ class PlumberAdmin(admin.ModelAdmin):
             messages.error(request, "No Reward Rule Found.")
             return redirect("/admin/myapp/plumber/")
 
-        plumber = Plumber.objects.get(id=plumber_id)
+        plumber = Plumber.objects.only(
+            "id",
+            "name",
+        ).get(id=plumber_id)
         
         total = PurchaseHistory.objects.filter(
             plumber=plumber,
@@ -238,7 +244,12 @@ class PlumberAdmin(admin.ModelAdmin):
 
         progress_list = []
 
-        rules = RewardRule.objects.all()
+        rules = RewardRule.objects.only(
+            "id",
+            "purchase_product",
+            "reward_product",
+            "buy_quantity",
+        )
 
         for rule in rules:
 
@@ -336,6 +347,12 @@ class RewardRuleAdmin(admin.ModelAdmin):
         "min_reward",
         "max_reward",
     )
+    list_per_page = 50
+
+    search_fields = (
+        "purchase_product",
+        "reward_product",
+    )
 
 @admin.register(ScratchCard)
 class ScratchCardAdmin(admin.ModelAdmin):
@@ -351,6 +368,17 @@ class ScratchCardAdmin(admin.ModelAdmin):
         "copy_link",
         "whatsapp_link",
     )
+    list_select_related = (
+        "plumber",
+        "reward_rule",
+    )
+
+    list_per_page = 50
+
+    search_fields = (
+        "plumber__name",
+        "reward_text",
+    )
 
     exclude = (
         "reward_rule",
@@ -365,10 +393,21 @@ class ScratchCardAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
 
-        rule = RewardRule.objects.filter(
-            min_purchase__lte=obj.purchase_amount,
-            max_purchase__gte=obj.purchase_amount
-        ).first()
+        rule = (
+            RewardRule.objects
+            .only(
+                "id",
+                "prize_type",
+                "reward_product",
+                "min_reward",
+                "max_reward",
+            )
+            .filter(
+                min_purchase__lte=obj.purchase_amount,
+                max_purchase__gte=obj.purchase_amount
+            )
+            .first()
+        )
 
         if rule:
 
@@ -467,6 +506,13 @@ class PurchaseHistoryAdmin(admin.ModelAdmin):
         "purchase_date",
         "note",
     )
+    list_select_related = ("plumber", "product")
+    list_per_page = 50
+    search_fields = (
+        "plumber__name",
+        "product__name",
+    )
+
     exclude = (
         "total",
     )
@@ -512,6 +558,14 @@ class FreeRewardHistoryAdmin(admin.ModelAdmin):
         "note",
     )
 
+    list_select_related = ("plumber",)
+
+    list_per_page = 50
+
+    search_fields = (
+        "plumber__name",
+        "reward_product",
+    )
     list_filter = (
         "reward_product",
         "given_date",

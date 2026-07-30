@@ -72,7 +72,6 @@
     font-weight:600;
     display:flex;
     align-items:center;
-    justify-content:center;
     gap:10px;
     transition:.3s;
     box-shadow:0 8px 20px rgba(34,197,94,.25);
@@ -105,6 +104,8 @@ thead th{
     text-align:center;
     font-size:15px;
     font-weight:600;
+
+    /* Vertical line */
     border-right:1px solid rgba(255,255,255,.15);
 }
 
@@ -113,10 +114,15 @@ thead th:last-child{
 }
 
 tbody td{
+
     padding:18px;
+
     text-align:center;
+
     color:#334155;
+
     border-right:1px solid #e5e7eb;
+
     border-bottom:1px solid #e5e7eb;
 }
 
@@ -127,9 +133,69 @@ tbody td:last-child{
 tbody tr:hover{
     background:#f8fbff;
 }
-
 tbody tr:last-child td{
     border-bottom:none;
+}
+.plumber-name{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#2563eb;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:700;
+}
+
+.product-icon{
+    color:#2563eb;
+    margin-right:8px;
+}
+
+.action-buttons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+
+.edit-btn,
+.delete-btn{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-decoration:none;
+    font-size:18px;
+    transition:.3s;
+}
+
+.edit-btn{
+    background:#FEF3C7;
+    color:#D97706;
+}
+
+.edit-btn:hover{
+    background:#D97706;
+    color:#fff;
+}
+
+.delete-btn{
+    background:#FEE2E2;
+    color:#DC2626;
+}
+
+.delete-btn:hover{
+    background:#DC2626;
+    color:#fff;
 }
 
 .empty{
@@ -138,6 +204,7 @@ tbody tr:last-child td{
     color:#64748b;
     font-size:16px;
 }
+/* View History Button */
 
 .progress-btn{
     display:inline-flex;
@@ -151,9 +218,8 @@ tbody tr:last-child td{
     border-radius:10px;
     font-size:14px;
     font-weight:600;
-    transition:.3s;
+    transition:all .3s ease;
     box-shadow:0 5px 12px rgba(37,99,235,.25);
-    white-space:nowrap;
 }
 
 .progress-btn:hover{
@@ -165,6 +231,67 @@ tbody tr:last-child td{
 
 .progress-btn i{
     font-size:16px;
+}
+.back-btn{
+    text-decoration:none;
+    background:#eef3ff;
+    color:#2d63ea;
+    padding:12px 22px;
+    border-radius:12px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    background:#dce8ff;
+}
+/* ===== Plumber Card ===== */
+
+.plumber-card{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    background:#fff;
+    padding:18px 24px;
+    border-radius:18px;
+    width:max-content;
+    margin-top:18px;
+    margin-bottom:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    border-left:6px solid #2563eb;
+}
+
+.plumber-avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+    font-weight:700;
+    box-shadow:0 8px 20px rgba(37,99,235,.30);
+}
+
+.plumber-title{
+    display:block;
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:4px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.plumber-details h2{
+    font-size:24px;
+    color:#173b7a;
+    font-weight:700;
+    margin:0;
 }
 
 @media(max-width:992px){
@@ -186,19 +313,13 @@ tbody tr:last-child td{
 
 @media(max-width:768px){
 
-    .page-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:20px;
-    }
-
     .page-header h1{
         font-size:30px;
     }
 
     .header-actions{
-        width:100%;
         flex-direction:column;
+        width:100%;
     }
 
     .search-box,
@@ -206,26 +327,17 @@ tbody tr:last-child td{
         width:100%;
     }
 
+    .add-btn{
+        justify-content:center;
+    }
+
     .table-card{
         overflow-x:auto;
-        -webkit-overflow-scrolling:touch;
     }
 
     table{
-        min-width:520px;
-    }
-
-    th,
-    td{
-        padding:14px 10px;
-        font-size:14px;
-        white-space:nowrap;
-    }
-
-    .progress-btn{
-        padding:8px 14px;
-        font-size:13px;
-        white-space:nowrap;
+        min-width:1200px;
     }
 
 }
+

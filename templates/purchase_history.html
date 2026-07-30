@@ -5,72 +5,70 @@
 
 <link rel="stylesheet" href="{% static 'css/purchase_history.css' %}">
 
-<div class="page-header">
+<div class="purchase-history-page">
 
-    <div>
+    <div class="page-header">
 
-        <h1><i class="bi bi-cart-check-fill"></i> Purchase History</h1>
+        <div>
 
-        <p>Manage all purchase records.</p>
+            <h1><i class="bi bi-cart-check-fill"></i> Purchase History</h1>
 
-    </div>
-
-    <div class="header-actions">
-
-        <div class="search-box">
-
-            <i class="bi bi-search"></i>
-
-            <input
-                type="text"
-                id="search"
-                placeholder="Search purchase..."
-                autocomplete="off"
-            >
+            <p>Manage all purchase records.</p>
 
         </div>
 
-        <a href="{% url 'add_purchase' %}" class="add-btn">
+        <div class="header-actions">
 
-            <i class="bi bi-plus-circle"></i>
+            <div class="search-box">
 
-            Add Purchase
+                <i class="bi bi-search"></i>
 
-        </a>
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Search plumber..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+            <a href="{% url 'add_purchase' %}" class="add-btn">
+
+                <i class="bi bi-plus-circle"></i>
+
+                Add Purchase
+
+            </a>
+
+        </div>
 
     </div>
 
-</div>
+    <div class="table-card">
 
-<div class="table-card">
+        <table>
 
-    <table>
+            <thead>
 
-        <thead>
+                <tr>
 
-            <tr>
+                    <th>SR.</th>
+                    <th>Plumber</th>
+                    <th>History</th>
 
-                <th>SR.</th>
-                <th>Plumber</th>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>Total</th>
-                <th>Purchase Date</th>
-                <th>Note</th>
-                <th>Action</th>
+                </tr>
 
-            </tr>
+            </thead>
 
-        </thead>
+            <tbody id="table-body">
 
-        <tbody id="table-body">
+                {% include "partials/purchase_table.html" %}
 
-            {% include "partials/purchase_table.html" %}
+            </tbody>
 
-        </tbody>
+        </table>
 
-    </table>
+    </div>
 
 </div>
 
